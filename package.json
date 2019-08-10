@@ -10,5 +10,8 @@
   "license": "UNLICENSED",
   "devDependencies": {
     "jest": "^24.8.0"
+  },
+  "dependencies": {
+    "mailgun.js": "^2.0.1"
   }
 }
