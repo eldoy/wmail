@@ -3,7 +3,6 @@ const fs = require('fs')
 const fspath = require('path')
 const filename = 'sirloin.png'
 const filepath = fspath.join(__dirname, filename)
-// const file = fs.readFileSync(filepath)
 const file = fs.createReadStream(filepath)
 
 describe('wmail', () => {
