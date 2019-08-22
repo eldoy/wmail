@@ -1,6 +1,9 @@
 const mailgun = require('mailgun.js')
-const DEFAULT_CONFIG = require('./config.js')
-const ALIASES = [{ reply: 'h:Reply-To' }]
+let defaultConfig = {}
+try {
+  defaultConfig = require('./config.js')
+} catch(e) {}
+const aliases = [{ reply: 'h:Reply-To' }]
 
 // mail object looks like this:
 // {
@@ -17,7 +20,7 @@ const ALIASES = [{ reply: 'h:Reply-To' }]
 // }
 
 module.exports = function(mail, customConfig = {}) {
-  for (const pair of ALIASES) {
+  for (const pair of aliases) {
     for (const key in pair) {
       const val = pair[key]
       if (mail[key]) {
@@ -26,7 +29,7 @@ module.exports = function(mail, customConfig = {}) {
       }
     }
   }
-  const config = Object.assign({}, DEFAULT_CONFIG, customConfig)
+  const config = Object.assign({}, defaultConfig, customConfig)
   const mg = mailgun.client({ username: 'api', key: config.key })
   return mg.messages.create(config.domain, mail)
 }
