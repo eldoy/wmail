@@ -20,6 +20,9 @@ const aliases = [{ reply: 'h:Reply-To' }]
 // }
 
 module.exports = function(mail, customConfig = {}) {
+  if (!mail) {
+    throw new Error('mail is missing')
+  }
   for (const pair of aliases) {
     for (const key in pair) {
       const val = pair[key]

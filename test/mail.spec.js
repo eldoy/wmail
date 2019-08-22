@@ -6,7 +6,17 @@ const filepath = fspath.join(__dirname, filename)
 const file = fs.createReadStream(filepath)
 
 describe('wmail', () => {
-  it('should send an email with attachment', async () => {
+  it('should not send mail with mail missing', async () => {
+    let fail
+    try {
+      await wmail()
+    } catch (e) {
+      fail = e.message
+    }
+    expect(fail).toBe('mail is missing')
+  })
+
+  it('should send email with full config and attachment', async () => {
     const mail = {
       to: 'Vidar Eldøy <vidar@eldoy.com>',
       from: 'Fugroup <vidar@fugroup.net>',
