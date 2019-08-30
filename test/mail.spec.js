@@ -1,4 +1,4 @@
-const wmail = require('../index.js')
+const mail = require('../index.js')()
 const fs = require('fs')
 const fspath = require('path')
 const filename = 'sirloin.png'
@@ -6,18 +6,18 @@ const filepath = fspath.join(__dirname, filename)
 const file = fs.createReadStream(filepath)
 
 describe('wmail', () => {
-  it('should not send mail with mail missing', async () => {
+  it('should not send mail with message missing', async () => {
     let fail
     try {
-      await wmail()
+      await mail()
     } catch (e) {
       fail = e.message
     }
-    expect(fail).toBe('mail is missing')
+    expect(fail).toBe('message is missing')
   })
 
   it('should send email with full config and attachment', async () => {
-    const mail = {
+    const result = await mail({
       to: 'Vidar Eldøy <vidar@eldoy.com>',
       from: 'Fugroup <vidar@fugroup.net>',
       cc: 'cc@fugroup.net',
@@ -27,8 +27,7 @@ describe('wmail', () => {
       text: 'Helloæøå',
       reply: 'vidar@fugroup.net',
       attachment: [file]
-    }
-    const result = await wmail(mail)
+    })
     expect(result.id).toBeDefined()
     expect(result.message).toBe('Queued. Thank you.')
   })

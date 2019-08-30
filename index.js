@@ -1,11 +1,12 @@
 const mailgun = require('mailgun.js')
 let defaultConfig = {}
 try {
-  defaultConfig = require('./config.js')
+  defaultConfig = require('./wmail.config.js')
 } catch(e) {}
+
 const aliases = [{ reply: 'h:Reply-To' }]
 
-// mail object looks like this:
+// message object looks like this:
 // {
 //   to: 'vidar@eldoy.com',
 //   from: 'vidar@fugroup.net',
@@ -19,20 +20,27 @@ const aliases = [{ reply: 'h:Reply-To' }]
 //   inline: [readStream]
 // }
 
-module.exports = function(mail, customConfig = {}) {
-  if (!mail) {
-    throw new Error('mail is missing')
-  }
-  for (const pair of aliases) {
-    for (const key in pair) {
-      const val = pair[key]
-      if (mail[key]) {
-        mail[val] = mail[key]
-        delete mail[key]
+// Usage:
+// const mail = require('wmail')({ domain: 'APIDOMAIN', key: 'APIKEY'})
+// mail({ to: 'vidar@eldoy.com', subject: 'Hello', text: 'How are you?' })
+
+module.exports = function(customConfig = {}) {
+  const generalConfig = Object.assign({}, defaultConfig, customConfig)
+  return function(message, messageConfig = {}) {
+    if (!message) {
+      throw new Error('message is missing')
+    }
+    for (const pair of aliases) {
+      for (const key in pair) {
+        const val = pair[key]
+        if (message[key]) {
+          message[val] = message[key]
+          delete message[key]
+        }
       }
     }
+    const config = Object.assign({}, generalConfig, messageConfig)
+    const mg = mailgun.client({ username: 'api', key: config.key })
+    return mg.messages.create(config.domain, message)
   }
-  const config = Object.assign({}, defaultConfig, customConfig)
-  const mg = mailgun.client({ username: 'api', key: config.key })
-  return mg.messages.create(config.domain, mail)
 }
