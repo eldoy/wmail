@@ -1,7 +1,7 @@
 {
   "name": "wmail",
-  "version": "0.1.0",
-  "description": "Waveorb email client",
+  "version": "0.2.0",
+  "description": "Mailgun email client",
   "main": "index.js",
   "scripts": {
     "test": "jest --watch"

@@ -8,36 +8,58 @@ npm i wmail
 ```
 
 ### Usage
-Add a config.js file in your root directory:
-```javascript
-module.exports = {
-  domain: 'fugroup.net',
-  key: 'your-mailgun-key'
-}
-```
-
-Then send a message:
 ```javascript
 const wmail = require('wmail')
+const mail = wmail({
+  domain: 'APIDOMAIN',
+  key: 'APIKEY',
+  config: {
+    subject: 'Subject',
+    reply: 'Name <hello@example.com>',
+    from: 'Name <hello@example.com>',
+    to: 'Name <hello@example.com>'
+  },
+  emails: {
+    support: {
+      function(data) {
+        return {
+          'support': {
+            text: 'hello: ' + data.name,
+            html: 'hello: ' + data.name
+          }
+        }
+      }
+    }
+  }
+})
+const result = mail({ template: 'support', to: 'vidar@eldoy.com', subject: 'Hello', text: 'How are you?' }, data)
 
-// File attachment needs to be a readStream
-const fs = require('fs')
-const fspath = require('path')
-const filename = 'sirloin.png'
-const filepath = fspath.join(__dirname, filename)
-const file = fs.createReadStream(filepath)
+// On success
+{
+  id: '<20190910043104.1.043A7DC389CBE263@fugroup.net>',
+  message: 'Queued. Thank you.'
+}
 
-const mail = {
-  to: 'Vidar Eldøy <vidar@eldoy.com>',
-  from: 'Fugroup <vidar@fugroup.net>',
+// On error
+{
+  "id": undefined,
+  "message": "'from' parameter is missing",
+  "status": 400
+}
+
+message object looks like this:
+{
+  to: 'vidar@eldoy.com',
+  from: 'vidar@fugroup.net',
   cc: 'cc@fugroup.net',
   bcc: 'bcc@fugroup.net',
   subject: 'hello',
-  html: '<h1>Helloæøå</h1>',
-  text: 'Helloæøå',
-  reply: 'vidar@fugroup.net',
-  attachment: [file]
+  html: '<h1>Hello</h1>',
+  text: 'Hello',
+  reply: 'vidar@eldoy.com',
+  attachment: [readStream],
+  inline: [readStream]
 }
-const result = await wmail(mail)
+
 ```
 MIT licensed. Enjoy!

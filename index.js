@@ -1,36 +1,17 @@
 const mailgun = require('mailgun.js')
-let defaultConfig = {}
-try {
-  defaultConfig = require('./wmail.config.js')
-} catch(e) {}
+const ALIASES = [{ reply: 'h:Reply-To' }]
 
-const aliases = [{ reply: 'h:Reply-To' }]
-
-// message object looks like this:
-// {
-//   to: 'vidar@eldoy.com',
-//   from: 'vidar@fugroup.net',
-//   cc: 'cc@fugroup.net',
-//   bcc: 'bcc@fugroup.net',
-//   subject: 'hello',
-//   html: '<h1>Hello</h1>',
-//   text: 'Hello',
-//   reply: 'vidar@eldoy.com',
-//   attachment: [readStream],
-//   inline: [readStream]
-// }
-
-// Usage:
-// const mail = require('wmail')({ domain: 'APIDOMAIN', key: 'APIKEY'})
-// mail({ to: 'vidar@eldoy.com', subject: 'Hello', text: 'How are you?' })
-
-module.exports = function(customConfig = {}) {
-  const generalConfig = Object.assign({}, defaultConfig, customConfig)
-  return function(message, messageConfig = {}) {
+module.exports = function(options = {}) {
+  return function(name, message, data) {
+    if (typeof name === 'object') {
+      data = message
+      message = name
+      name = undefined
+    }
     if (!message) {
       throw new Error('message is missing')
     }
-    for (const pair of aliases) {
+    for (const pair of ALIASES) {
       for (const key in pair) {
         const val = pair[key]
         if (message[key]) {
@@ -39,8 +20,17 @@ module.exports = function(customConfig = {}) {
         }
       }
     }
-    const config = Object.assign({}, generalConfig, messageConfig)
-    const mg = mailgun.client({ username: 'api', key: config.key })
-    return mg.messages.create(config.domain, message)
+    function email(name) {
+      const fn = name && options.emails && options.emails[name]
+      if (fn) {
+        if (typeof fn !== 'function') {
+          throw new Error('template must be a function')
+        }
+        return fn(data || {})
+      }
+    }
+    message = { ...options.config, ...email(name), ...message }
+    const mg = mailgun.client({ username: 'api', key: options.key })
+    return mg.messages.create(options.domain, message)
   }
 }
