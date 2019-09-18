@@ -23,16 +23,25 @@ const mail = wmail({
     support: {
       function(data) {
         return {
-          'support': {
-            text: 'hello: ' + data.name,
-            html: 'hello: ' + data.name
-          }
+          // Return message options here
+          text: 'hello: ' + data.name,
+          html: 'hello: ' + data.name
         }
       }
     }
   }
 })
-const result = mail({ template: 'support', to: 'vidar@eldoy.com', subject: 'Hello', text: 'How are you?' }, data)
+
+// Send email with options
+const result = mail(
+  {
+    template: 'support',
+    to: 'vidar@eldoy.com',
+    subject: 'Hello',
+    text: 'How are you?'
+  },
+  data
+)
 
 // On success
 {
@@ -47,7 +56,7 @@ const result = mail({ template: 'support', to: 'vidar@eldoy.com', subject: 'Hell
   "status": 400
 }
 
-message object looks like this:
+// Message object looks like this:
 {
   to: 'vidar@eldoy.com',
   from: 'vidar@fugroup.net',
