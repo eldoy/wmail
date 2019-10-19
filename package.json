@@ -9,6 +9,7 @@
   "author": "Vidar Eldøy <vidar@eldoy.com>",
   "license": "MIT",
   "devDependencies": {
+    "conficurse": "^0.1.0",
     "jest": "^24.9.0"
   },
   "dependencies": {

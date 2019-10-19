@@ -1,7 +1,7 @@
 const wmail = require('../index.js')
 const fs = require('fs')
 const fspath = require('path')
-const filepath = fspath.join(__dirname, 'sirloin.png')
+const filepath = fspath.join(__dirname, 'assets', 'sirloin.png')
 const file = fs.createReadStream(filepath)
 
 const { domain, key } = require('../wmail.config.js')
