@@ -1,36 +1,40 @@
 const mailgun = require('mailgun.js')
 const ALIASES = [{ reply: 'h:Reply-To' }]
 
-module.exports = function(options = {}) {
-  return function(name, message, data) {
-    if (typeof name === 'object') {
-      data = message
-      message = name
-      name = undefined
-    }
-    if (!message) {
-      throw new Error('message is missing')
-    }
-    for (const pair of ALIASES) {
-      for (const key in pair) {
-        const val = pair[key]
-        if (message[key]) {
-          message[val] = message[key]
-          delete message[key]
-        }
+/** Possible options
+ * to: 'Vidar Eldøy <vidar@eldoy.com>',
+ * from: 'Fugroup <vidar@fugroup.net>',
+ * cc: 'cc@fugroup.net',
+ * bcc: 'bcc@fugroup.net',
+ * subject: 'hello',
+ * html: '<h1>Helloæøå</h1>',
+ * text: 'Helloæøå',
+ * reply: 'vidar@fugroup.net',
+ * attachment: [file]
+*/
+
+function replaceKeys(options) {
+  for (const pair of ALIASES) {
+    for (const key in pair) {
+      const val = pair[key]
+      if (options[key]) {
+        options[val] = options[key]
+        delete options[key]
       }
     }
-    function email(name) {
-      const fn = name && options.emails && options.emails[name]
-      if (fn) {
-        if (typeof fn !== 'function') {
-          throw new Error('template must be a function')
-        }
-        return fn(data || {})
-      }
-    }
-    message = { ...options.config, ...email(name), ...message }
-    const mg = mailgun.client({ username: 'api', key: options.key })
-    return mg.messages.create(options.domain, message)
+  }
+}
+
+module.exports = function(config = {}) {
+  return async function(name, options, $, data) {
+    replaceKeys(options)
+    $.mail = await $.app.mail[name]($, data)
+    const [html, text] = [
+      await $.app.mail.layouts.html($, data),
+      await $.app.mail.layouts.text($, data)
+    ]
+    options = { ...config.options, ...$.mail.options, html, text,...options }
+    const mg = mailgun.client({ username: 'api', key: config.key })
+    return mg.messages.create(config.domain, options)
   }
 }
