@@ -1,5 +1,5 @@
 # Wmail
-Send emails with Mailgun
+Send emails with [Mailgun](https://mailgun.com)
 
 ### Installation
 ```
@@ -8,51 +8,54 @@ npm i wmail
 
 ### Usage
 ```javascript
-// Set up route object, can be loaded from disk
-const $ = {
-  app: {
-    mail: {
-      layouts: {
-        html: async function ($, data) {},
-        txt: async function ($, data) {
-          return `<div class="content">${ $.mail.html.content }</div>`
-        }
+// Set up mail templates, can be loaded from disk
+const mail = {
+  mail: {
+    layouts: {
+      html: async function (mail, data) {
+        return `<div class="content">${ mail.html.content }</div>`
+      },
+      txt: async function (mail, data) {
+        return mail.text.content
       }
-      contact: async function ($, data) {
-        return {
-          options: {
-            subject: 'contact'
-          },
-          html: {
-            layout: 'html',
-            content: `<div>content</div>`
-          },
-          text: {
-            layout: 'text',
-            content: `content`
-          }
+    }
+    contact: async function (data) {
+      return {
+        options: {
+          subject: 'contact'
+        },
+        html: {
+          layout: 'html',
+          content: `<div>content</div>`
+        },
+        text: {
+          layout: 'text',
+          content: 'content'
         }
       }
     }
   }
 }
 
-// Default options
-const defaultOptions = {
-  subject: 'Contact',
-  reply: 'hello@example.com',
-  from: 'hello@example.com',
-  to: 'hello@example.com'
-}
+// Config for mailer
+const config = {
+  mail,
 
-// Mailgun credentials
-const credentials = {
+  // Mailgun credentials
   domain: 'example.com',
-  key: 'your-mailgun-key'
+  key: 'your-mailgun-key',
+
+  // Default options
+  options: {
+    subject: 'Contact',
+    reply: 'hello@example.com',
+    from: 'hello@example.com',
+    to: 'hello@example.com'
+  }
 }
 
 // Create mailer
-const mailer = wmail({...credentials, defaultOptions })
+const mailer = wmail(config)
 
 // Send email
 const options = {
@@ -61,7 +64,8 @@ const options = {
 }
 
 // Parameters: name, options, route, data
-const result = await mailer('mail1', options, $, { key: 'hello' })
+const data = { key: 'hello' }
+const result = await mailer('mail1', options, data)
 
 // On success
 {
@@ -91,4 +95,4 @@ const result = await mailer('mail1', options, $, { key: 'hello' })
 }
 
 ```
-MIT licensed. Enjoy!
+ISC licensed. Enjoy!

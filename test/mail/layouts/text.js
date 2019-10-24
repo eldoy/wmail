@@ -1,3 +1,3 @@
-module.exports = async function($, data) {
-  return `${ $.mail.html.content } Best regards`
+module.exports = async function(mail, data) {
+  return `${ mail.html.content } Best regards`
 }

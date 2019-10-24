@@ -1,7 +1,7 @@
 {
   "name": "wmail",
-  "version": "0.3.0",
-  "description": "Mailgun email client",
+  "version": "0.4.0",
+  "description": "Mailgun email client with support for templates and layouts",
   "main": "index.js",
   "scripts": {
     "test": "jest --watch"
