@@ -3,13 +3,13 @@ const ALIASES = [{ reply: 'h:Reply-To' }]
 
 /** Possible options
  * to: 'Vidar Eldøy <vidar@eldoy.com>',
- * from: 'Fugroup <vidar@fugroup.net>',
- * cc: 'cc@fugroup.net',
- * bcc: 'bcc@fugroup.net',
+ * from: 'Vidar Eldøy <vidar@eldoy.com>',
+ * cc: 'cc@eldoy.com',
+ * bcc: 'bcc@eldoy.com',
  * subject: 'hello',
  * html: '<h1>Helloæøå</h1>',
  * text: 'Helloæøå',
- * reply: 'vidar@fugroup.net',
+ * reply: 'vidar@eldoy.com',
  * attachment: [file]
 */
 
