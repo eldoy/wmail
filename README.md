@@ -18,19 +18,21 @@ const mail = {
       txt: async function (mail, data) {
         return mail.text.content
       }
-    }
-    contact: async function (data) {
-      return {
-        options: {
-          subject: 'contact'
-        },
-        html: {
-          layout: 'html',
-          content: `<div>content</div>`
-        },
-        text: {
-          layout: 'text',
-          content: 'content'
+    },
+    views: {
+      contact: async function (data) {
+        return {
+          options: {
+            subject: 'contact'
+          },
+          html: {
+            layout: 'html',
+            content: `<div>content</div>`
+          },
+          text: {
+            layout: 'text',
+            content: 'content'
+          }
         }
       }
     }
@@ -69,7 +71,7 @@ const result = await mailer('mail1', options, data)
 
 // On success
 {
-  id: '<20190910043104.1.043A7DC389CBE263@fugroup.net>',
+  id: '<20190910043104.1.043A7DC389CBE263@eldoy.com>',
   message: 'Queued. Thank you.'
 }
 
@@ -83,9 +85,9 @@ const result = await mailer('mail1', options, data)
 // Message object looks like this:
 {
   to: 'vidar@eldoy.com',
-  from: 'vidar@fugroup.net',
-  cc: 'cc@fugroup.net',
-  bcc: 'bcc@fugroup.net',
+  from: 'vidar@eldoy.com',
+  cc: 'cc@eldoy.com',
+  bcc: 'bcc@eldoy.com',
   subject: 'hello',
   html: '<h1>Hello</h1>',
   text: 'Hello',
