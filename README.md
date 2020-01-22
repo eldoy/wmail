@@ -97,4 +97,4 @@ const result = await mailer('mail1', options, data)
 }
 
 ```
-ISC licensed. Enjoy!
+MIT licensed. Enjoy!
