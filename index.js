@@ -28,12 +28,10 @@ function replaceKeys(options) {
 module.exports = function(config = {}) {
   return async function(name, options, data) {
     replaceKeys(options)
-    const mail = await config.mail.views[name](data)
-    const [html, text] = [
-      await config.mail.layouts.html(mail, data),
-      await config.mail.layouts.text(mail, data)
-    ]
-    options = { ...config.options, ...mail.options, html, text,...options }
+    const mail = await config.app.mail[name](data)
+    const html = await config.app.layouts[mail.html.layout](mail, data)
+    const text = await config.app.layouts[mail.text.layout](mail, data)
+    options = { ...config.options, ...mail.options, html, text, ...options }
     const mg = mailgun.client({ username: 'api', key: config.key })
     return mg.messages.create(config.domain, options)
   }

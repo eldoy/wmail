@@ -9,30 +9,28 @@ npm i wmail
 ### Usage
 ```javascript
 // Set up mail templates, can be loaded from disk
-const mail = {
-  mail: {
-    layouts: {
-      html: async function (mail, data) {
-        return `<div class="content">${ mail.html.content }</div>`
-      },
-      txt: async function (mail, data) {
-        return mail.text.content
-      }
+const app = {
+  layouts: {
+    html: async function (mail, data) {
+      return `<div class="content">${ mail.html.content }</div>`
     },
-    views: {
-      contact: async function (data) {
-        return {
-          options: {
-            subject: 'contact'
-          },
-          html: {
-            layout: 'html',
-            content: `<div>content</div>`
-          },
-          text: {
-            layout: 'text',
-            content: 'content'
-          }
+    txt: async function (mail, data) {
+      return mail.text.content
+    }
+  },
+  mail: {
+    contact: async function (data) {
+      return {
+        options: {
+          subject: 'contact'
+        },
+        html: {
+          layout: 'html',
+          content: `<div>content</div>`
+        },
+        text: {
+          layout: 'text',
+          content: 'content'
         }
       }
     }
@@ -41,7 +39,7 @@ const mail = {
 
 // Config for mailer
 const config = {
-  mail,
+  app,
 
   // Mailgun credentials
   domain: 'example.com',
