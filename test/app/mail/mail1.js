@@ -1,4 +1,4 @@
-module.exports = async function(data) {
+module.exports = async function($, data) {
   return {
     options: {
       subject: 'mail1'

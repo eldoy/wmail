@@ -23,6 +23,9 @@ describe('wmail', () => {
       attachment: [file]
     }
     const data = { key: 'hello' }
-    const message = await mailer('mail1', options, data)
+    const $ = {}
+    const result = await mailer('mail1', options, $, data)
+    expect(result.id).toBeDefined()
+    expect(result.message).toBe('Queued. Thank you.')
   })
 })
