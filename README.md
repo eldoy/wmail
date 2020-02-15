@@ -1,5 +1,7 @@
 # Wmail
-Send emails with [Mailgun](https://mailgun.com)
+Send emails with [Mailgun.](https://mailgun.com)
+
+Made for the [Waveorb web app development platform.](https://waveorb.com)
 
 ### Installation
 ```
@@ -11,15 +13,15 @@ npm i wmail
 // Set up mail templates, can be loaded from disk
 const app = {
   layouts: {
-    html: async function (mail, data) {
+    html: async function(mail, $, data) {
       return `<div class="content">${ mail.html.content }</div>`
     },
-    txt: async function (mail, data) {
+    txt: async function(mail, $, data) {
       return mail.text.content
     }
   },
   mail: {
-    contact: async function (data) {
+    contact: async function($, data) {
       return {
         options: {
           subject: 'contact'
@@ -63,9 +65,9 @@ const options = {
   attachment: [file]
 }
 
-// Parameters: name, options, route, data
+// Parameters: name, options, $, data
 const data = { key: 'hello' }
-const result = await mailer('mail1', options, data)
+const result = await mailer('mail1', options, $, data)
 
 // On success
 {
