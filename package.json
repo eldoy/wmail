@@ -9,8 +9,8 @@
   "author": "Vidar Eldøy <vidar@eldoy.com>",
   "license": "MIT",
   "devDependencies": {
-    "conficurse": "^0.1.0",
-    "jest": "^25.1.0"
+    "conficurse": "^0.2.1",
+    "jest": "^26.6.3"
   },
   "dependencies": {
     "mailgun.js": "^2.0.1"
