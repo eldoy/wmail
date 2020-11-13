@@ -43,7 +43,6 @@ module.exports = function(config = {}) {
     }
     options = { ...config.options, ...options, ...mail }
     alias(options)
-    console.log({ options })
     return mg.messages.create(config.domain, options)
   }
 }
