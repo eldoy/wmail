@@ -1,3 +1,4 @@
+const _ = require('lodash')
 const mailgun = require('mailgun.js')
 const ALIASES = [{ reply: 'h:Reply-To' }]
 
@@ -30,7 +31,7 @@ module.exports = function(config = {}) {
 
   return async function(mail, options, $, data) {
     if (typeof mail === 'string') {
-      mail = await config.app.mail[mail]($, data)
+      mail = await _.get(config.app.mail, mail)($, data)
       // Apply layout
       const name = mail.layout || 'mail'
       for (const format of ['html', 'text']) {
@@ -42,6 +43,7 @@ module.exports = function(config = {}) {
     }
     options = { ...config.options, ...options, ...mail }
     alias(options)
+    console.log({ options })
     return mg.messages.create(config.domain, options)
   }
 }
