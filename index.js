@@ -13,7 +13,7 @@ const ALIASES = [{ reply: 'h:Reply-To' }]
  * attachment: [file]
 */
 
-function replaceKeys(options) {
+function alias(options) {
   for (const pair of ALIASES) {
     for (const key in pair) {
       const val = pair[key]
@@ -26,13 +26,22 @@ function replaceKeys(options) {
 }
 
 module.exports = function(config = {}) {
-  return async function(name, options, $, data) {
-    replaceKeys(options)
-    const mail = await config.app.mail[name]($, data)
-    const html = await config.app.layouts[mail.html.layout](mail, $, data)
-    const text = await config.app.layouts[mail.text.layout](mail, $, data)
-    options = { ...config.options, ...mail.options, html, text, ...options }
-    const mg = mailgun.client({ username: 'api', key: config.key })
+  const mg = mailgun.client({ username: 'api', key: config.key })
+
+  return async function(mail, options, $, data) {
+    if (typeof mail === 'string') {
+      mail = await config.app.mail[mail]($, data)
+      // Apply layout
+      const name = mail.layout || 'mail'
+      for (const format of ['html', 'text']) {
+        const layout = config.app.layouts[name]
+        if (typeof layout === 'function') {
+          mail[format] = (await layout(mail, $, data))[format]
+        }
+      }
+    }
+    options = { ...config.options, ...options, ...mail }
+    alias(options)
     return mg.messages.create(config.domain, options)
   }
 }
