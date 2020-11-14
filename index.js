@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const mailgun = require('mailgun.js')
+const mustache = require('mustache')
 const marked = require('marked')
 marked.setOptions({ headerIds: false })
 const ALIASES = [{ reply: 'h:Reply-To' }]
@@ -39,16 +40,15 @@ module.exports = function(config = {}) {
   async function build(mail, options, $, data) {
     if (typeof mail === 'string') {
       mail = await _.get(config.app.mail, mail)($, data)
-      // Format
-      mail.html.content = strip(mail.html.content)
-      mail.text.content = strip(mail.text.content)
-      if (mail.html.format === 'markdown') {
-        mail.html.content = marked(mail.html.content)
-      }
-      // Apply layout
-      const name = mail.layout || 'mail'
+      const layoutName = mail.layout || 'mail'
       for (const format of ['html', 'text']) {
-        const layout = config.app.layouts[name]
+        // Format
+        mail[format].content = mustache.render(strip(mail[format].content), data)
+        if (mail[format].format === 'markdown') {
+          mail[format].content = marked(mail[format].content)
+        }
+        // Apply layout
+        const layout = config.app.layouts[layoutName]
         if (typeof layout === 'function') {
           const content = await layout(mail, $, data)
           mail[format] = strip(content[format])

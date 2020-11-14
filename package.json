@@ -15,6 +15,7 @@
   "dependencies": {
     "lodash": "^4.17.20",
     "mailgun.js": "^2.0.1",
-    "marked": "^1.2.3"
+    "marked": "^1.2.3",
+    "mustache": "^4.0.1"
   }
 }
