@@ -57,7 +57,19 @@ describe('wmail', () => {
     expect(flatten(result.text)).toBe(`mail3 text content link hello Best regards`)
   })
 
-  xit('should send a message', async () => {
+  it('should work with mustache in layouts', async () => {
+    const options = {
+      to: 'Vidar Eldøy <vidar@eldoy.com>',
+      attachment: [file]
+    }
+    const data = { key: 'hello' }
+    const $ = {}
+    const result = await mailer.build('mail4', options, $, data)
+    expect(flatten(result.html)).toBe(`<!doctype html><html lang=\"en\"><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"><title>mail4</title><style>body { background-color: gold; }</style></head><body><div class=\"content\">mail4 mustache content link hello</div><div>Best regards</div></body></html>`)
+    expect(flatten(result.text)).toBe(`mail4 text content link hello Best regards`)
+  })
+
+  it('should send a message', async () => {
     const options = {
       to: 'Vidar Eldøy <vidar@eldoy.com>',
       attachment: [file]

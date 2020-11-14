@@ -43,7 +43,7 @@ module.exports = function(config = {}) {
       const layoutName = mail.layout || 'mail'
       for (const format of ['html', 'text']) {
         // Format
-        mail[format].content = mustache.render(strip(mail[format].content), data)
+        mail[format].content = mustache.render(strip(mail[format].content), { mail, data })
         if (mail[format].format === 'markdown') {
           mail[format].content = marked(mail[format].content)
         }
@@ -51,7 +51,7 @@ module.exports = function(config = {}) {
         const layout = config.app.layouts[layoutName]
         if (typeof layout === 'function') {
           const content = await layout(mail, $, data)
-          mail[format] = strip(content[format])
+          mail[format] = mustache.render(strip(content[format]), { mail, data })
         }
       }
     }

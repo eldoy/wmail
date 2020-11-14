@@ -3,11 +3,11 @@ module.exports = async function($, data) {
     subject: 'mail3',
     html: {
       content: `
-        mail3 mustache content link {{key}}
+        mail3 mustache content link {{data.key}}
       `
     },
     text: {
-      content: `mail3 text content link {{key}}`
+      content: `mail3 text content link {{data.key}}`
     }
   }
 }
