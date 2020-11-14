@@ -56,6 +56,7 @@ module.exports = function(config = {}) {
       }
     }
     options = { ...config.options, ...options, ...mail }
+    delete options.layout
     alias(options)
     return options
   }

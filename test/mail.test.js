@@ -21,6 +21,15 @@ const config = { ...credentials, options: OPTIONS, app }
 const mailer = wmail(config)
 
 describe('wmail', () => {
+  it('should build with the right options', async () => {
+    const result = await mailer.build('mail1', OPTIONS, {}, {})
+    expect(result.subject).toBe('mail1')
+    expect(result['h:Reply-To']).toBe('Waveorb <hello@waveorb.com>')
+    expect(result.from).toBe('Waveorb <hello@waveorb.com>')
+    expect(result.to).toBe('Waveorb <hello@waveorb.com>')
+    expect(result.layout).toBeUndefined()
+  })
+
   it('should build a message', async () => {
     const options = {
       to: 'Vidar Eldøy <vidar@eldoy.com>',
