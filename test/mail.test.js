@@ -34,6 +34,17 @@ describe('wmail', () => {
     expect(flatten(result.text)).toBe(`mail1 text content link hello Best regards`)
   })
 
+  it('should support markdown for html', async () => {
+    const options = {
+      to: 'Vidar Eldøy <vidar@eldoy.com>',
+      attachment: [file]
+    }
+    const data = { key: 'hello' }
+    const $ = {}
+    const result = await mailer.build('mail2', options, $, data)
+    expect(flatten(result.html)).toBe(`<!doctype html><html lang=\"en\"><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"><title>mail2</title><style>body { background-color: gold; }</style></head><body><div class=\"content\"><h1>mail2</h1><p>markdown content link hello</p></div><div>Best regards</div></body></html>`)
+  })
+
   xit('should send a message', async () => {
     const options = {
       to: 'Vidar Eldøy <vidar@eldoy.com>',

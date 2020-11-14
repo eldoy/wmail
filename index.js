@@ -1,5 +1,7 @@
 const _ = require('lodash')
 const mailgun = require('mailgun.js')
+const marked = require('marked')
+marked.setOptions({ headerIds: false })
 const ALIASES = [{ reply: 'h:Reply-To' }]
 
 /** Possible options
@@ -27,15 +29,29 @@ function alias(options) {
   }
 }
 
+function strip(str) {
+  return str.split('\n').map(line => line.trim()).join('\n')
+}
+
 module.exports = function(config = {}) {
   const mg = mailgun.client({ username: 'api', key: config.key })
 
   async function build(mail, options, $, data) {
     if (typeof mail === 'string') {
       mail = await _.get(config.app.mail, mail)($, data)
-      // Apply layout
+      // Format
+      mail.html.content = strip(mail.html.content)
+      mail.text.content = strip(mail.text.content)
+      if (mail.html.format === 'markdown') {
+        mail.html.content = marked(mail.html.content)
+      }
+      // Apply layout and formatting
       const name = mail.layout || 'mail'
       for (const format of ['html', 'text']) {
+        mail[format].content = strip(mail[format].content)
+        if (mail[format].format === 'markdown') {
+          mail[format]
+        }
         const layout = config.app.layouts[name]
         if (typeof layout === 'function') {
           mail[format] = (await layout(mail, $, data))[format]
