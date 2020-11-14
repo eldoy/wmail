@@ -45,16 +45,13 @@ module.exports = function(config = {}) {
       if (mail.html.format === 'markdown') {
         mail.html.content = marked(mail.html.content)
       }
-      // Apply layout and formatting
+      // Apply layout
       const name = mail.layout || 'mail'
       for (const format of ['html', 'text']) {
-        mail[format].content = strip(mail[format].content)
-        if (mail[format].format === 'markdown') {
-          mail[format]
-        }
         const layout = config.app.layouts[name]
         if (typeof layout === 'function') {
-          mail[format] = (await layout(mail, $, data))[format]
+          const content = await layout(mail, $, data)
+          mail[format] = strip(content[format])
         }
       }
     }
