@@ -12,6 +12,7 @@ const ALIASES = [{ reply: 'h:Reply-To' }]
  * text: 'Helloæøå',
  * reply: 'vidar@eldoy.com',
  * attachment: [file]
+ * inline: [file]
 */
 
 function alias(options) {
@@ -29,7 +30,7 @@ function alias(options) {
 module.exports = function(config = {}) {
   const mg = mailgun.client({ username: 'api', key: config.key })
 
-  return async function(mail, options, $, data) {
+  async function build(mail, options, $, data) {
     if (typeof mail === 'string') {
       mail = await _.get(config.app.mail, mail)($, data)
       // Apply layout
@@ -43,6 +44,13 @@ module.exports = function(config = {}) {
     }
     options = { ...config.options, ...options, ...mail }
     alias(options)
+    return options
+  }
+
+  async function send(...args) {
+    options = await build(...args)
     return mg.messages.create(config.domain, options)
   }
+
+  return { build, send }
 }
