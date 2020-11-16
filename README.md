@@ -56,6 +56,18 @@ content: `# Hello`
 ```
 The layout can't do Markdown, it has to be HTML.
 
+You can use the file option to set the content from a file:
+```javascript
+module.exports = async function($, data) {
+  return {
+    layout: 'mail',
+    subject: 'mail1',
+    file: 'data/markdown/mail.md'
+  }
+}
+```
+The markdown will be automatically transformed to HTML if it's a markdown file.
+
 ### Variables
 You can pass variables through the `data` parameter:
 ```javascript

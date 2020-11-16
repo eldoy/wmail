@@ -60,14 +60,17 @@ module.exports = function(config = {}) {
       if (mail.format === 'markdown') {
         mail.content = marked(mail.content)
       }
-      // Apply layout
+
+      // Layout
       const layout = _.get(config.app.layouts, layoutName)
       if (typeof layout === 'function') {
         const content = await layout(mail, $, data)
         mail.html = mustache.render(strip(content), { mail, ...data })
       }
     }
+
     mail.text = htmlToText(mail.html)
+
     options = { ...config.options, ...options, ...mail }
     delete options.layout
     alias(options)
