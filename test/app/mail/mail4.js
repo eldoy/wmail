@@ -4,11 +4,11 @@ module.exports = async function($, data) {
     subject: 'mail4',
     html: {
       content: `
-        mail4 mustache content link {{data.key}}
+        mail4 mustache content link {{key}}
       `
     },
     text: {
-      content: `mail4 text content link {{data.key}}`
+      content: `mail4 text content link {{key}}`
     }
   }
 }
