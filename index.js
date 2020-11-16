@@ -1,7 +1,9 @@
 const _ = require('lodash')
 const mailgun = require('mailgun.js')
 const mustache = require('mustache')
+const { htmlToText } = require('html-to-text')
 const marked = require('marked')
+
 marked.setOptions({ headerIds: false })
 const ALIASES = [{ reply: 'h:Reply-To' }]
 
@@ -41,20 +43,20 @@ module.exports = function(config = {}) {
     if (typeof mail === 'string') {
       mail = await _.get(config.app.mail, mail)($, data)
       const layoutName = mail.layout || 'mail'
-      for (const format of ['html', 'text']) {
-        // Format
-        mail[format].content = mustache.render(strip(mail[format].content), { mail, ...data })
-        if (mail[format].format === 'markdown') {
-          mail[format].content = marked(mail[format].content)
-        }
-        // Apply layout
-        const layout = _.get(config.app.layouts, layoutName)
-        if (typeof layout === 'function') {
-          const content = await layout(mail, $, data)
-          mail[format] = mustache.render(strip(content[format]), { mail, ...data })
-        }
+
+      // Format
+      mail.content = mustache.render(strip(mail.content), { mail, ...data })
+      if (mail.format === 'markdown') {
+        mail.content = marked(mail.content)
+      }
+      // Apply layout
+      const layout = _.get(config.app.layouts, layoutName)
+      if (typeof layout === 'function') {
+        const content = await layout(mail, $, data)
+        mail.html = mustache.render(strip(content), { mail, ...data })
       }
     }
+    mail.text = htmlToText(mail.html)
     options = { ...config.options, ...options, ...mail }
     delete options.layout
     alias(options)

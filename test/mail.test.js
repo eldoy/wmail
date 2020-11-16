@@ -40,7 +40,7 @@ describe('wmail', () => {
     const result = await mailer.build('mail1', options, $, data)
     expect(result.to).toBe(options.to)
     expect(flatten(result.html)).toBe(`<!doctype html><html lang=\"en\"><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"><title>mail1</title><style>body { background-color: gold; }</style></head><body><div class=\"content\">mail1 html content link hello</div><div>Best regards</div></body></html>`)
-    expect(flatten(result.text)).toBe(`mail1 text content link hello Best regards`)
+    expect(flatten(result.text)).toBe(`mail1 html content link helloBest regards`)
   })
 
   it('should support markdown for html', async () => {
@@ -63,7 +63,7 @@ describe('wmail', () => {
     const $ = {}
     const result = await mailer.build('mail3', options, $, data)
     expect(flatten(result.html)).toBe(`<!doctype html><html lang=\"en\"><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"><title>mail3</title><style>body { background-color: gold; }</style></head><body><div class=\"content\">mail3 mustache content link hello</div><div>Best regards</div></body></html>`)
-    expect(flatten(result.text)).toBe(`mail3 text content link hello Best regards`)
+    expect(flatten(result.text)).toBe(`mail3 mustache content link helloBest regards`)
   })
 
   it('should work with mustache in layouts', async () => {
@@ -75,7 +75,7 @@ describe('wmail', () => {
     const $ = {}
     const result = await mailer.build('mail4', options, $, data)
     expect(flatten(result.html)).toBe(`<!doctype html><html lang=\"en\"><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"><title>mail4</title><style>body { background-color: gold; }</style></head><body><div class=\"content\">mail4 mustache content link hello</div><div>Best regards</div></body></html>`)
-    expect(flatten(result.text)).toBe(`mail4 text content link hello Best regards`)
+    expect(flatten(result.text)).toBe(`mail4 mustache content link helloBest regards`)
   })
 
   it('should send a message', async () => {
