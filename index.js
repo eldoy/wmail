@@ -1,3 +1,4 @@
+const fs = require('fs')
 const _ = require('lodash')
 const mailgun = require('mailgun.js')
 const mustache = require('mustache')
@@ -43,6 +44,16 @@ module.exports = function(config = {}) {
     if (typeof mail === 'string') {
       mail = await _.get(config.app.mail, mail)($, data)
       const layoutName = mail.layout || 'mail'
+
+      // Content
+      if (mail.file) {
+        const file = fs.readFileSync(mail.file, 'utf8')
+        if (/\.md$/.test(mail.file)) {
+          mail.format = 'markdown'
+        }
+        mail.content = file
+        delete mail.file
+      }
 
       // Format
       mail.content = mustache.render(strip(mail.content), { mail, ...data })
