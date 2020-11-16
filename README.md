@@ -1,5 +1,10 @@
 # Wmail
-Send emails with [Mailgun.](https://mailgun.com)
+Send emails with [Mailgun.](https://mailgun.com) Boasts the following features:
+
+* Send email with Mailgun
+* Layout support
+* Supports HTML, Markdown and Mustache templates
+* Automatically converts HTML to use as text version
 
 Made for the [Waveorb web app development platform.](https://waveorb.com)
 
@@ -12,27 +17,22 @@ npm i wmail
 In `app/layouts` add a file called `mail.js`:
 ```javascript
 module.exports = async function(mail, $, data) {
-  return {
-    html: /* html */`
-      <!doctype html>
-      <html lang="en">
-        <head>
-          <meta http-equiv="content-type" content="text/html; charset=utf-8">
-          <title>${mail.subject || 'Wmail'}</title>
-          <style>
-            body { background-color: gold; }
-          </style>
-        </head>
-        <body>
-          <div class="content">${mail.html.content}</div>
-          <div>Best regards</div>
-        </body>
-      </html>
-    `,
-    text: `
-      ${mail.text.content} Best regards
-    `
-  }
+  return /* html */`
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <title>${mail.subject || 'Wmail'}</title>
+        <style>
+          body { background-color: gold; }
+        </style>
+      </head>
+      <body>
+        <div class="content">${mail.html.content}</div>
+        <div>Best regards</div>
+      </body>
+    </html>
+  `
 }
 ```
 
@@ -42,43 +42,33 @@ module.exports = async function($, data) {
   return {
     layout: 'mail',
     subject: 'mail1',
-    html: {
-      content: `mail1 html content link ${data.key}`
-    },
-    text: {
-      content: `mail1 text content link ${data.key}`
-    }
+    content: `mail1 html content link ${data.key}`
   }
 }
 ```
 
-The HTML email content can be written in Markdown:
+The email content can be written in Markdown:
 ```javascript
 // ...
-html: {
-  format: 'markdown',
-  content: `# Hello`
-}
+format: 'markdown',
+content: `# Hello`
 // ...
 ```
-The layout can't do Markdown, it has to be text or HTML.
+The layout can't do Markdown, it has to be HTML.
 
 ### Variables
 You can pass variables through the `data` parameter:
 ```javascript
+await mailer.send('mail1', options, $, data)
 // ...
-html: {
-  content: `mail1 html content link ${data.key}`
-}
+content: `mail1 html content link ${data.key}`
 // ...
 ```
 
 You can also use [Mustache](https://github.com/janl/mustache.js):
 ```javascript
 // ...
-html: {
-  content: `mail1 html content link {{data.key}}`
-}
+content: `mail1 html content link {{data.key}}`
 // ...
 ```
 Both of these techniques work in the layout as well.
@@ -106,6 +96,8 @@ module.exports = async function(app) {
 ```
 
 ### Send email
+Emails will automatically include the text version which is converted from the HTML in your templates.
+
 ```javascript
 // Use mailer from plugin
 const mailer = $.app.mailer
