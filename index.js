@@ -52,7 +52,6 @@ module.exports = function(config = {}) {
         mail.format = 'markdown'
       }
       mail.content = file
-      delete mail.file
     }
 
     // Mustache
@@ -76,7 +75,6 @@ module.exports = function(config = {}) {
     }
 
     options = { ...config.options, ...options, ...mail }
-    delete options.layout
     alias(options)
     return options
   }

@@ -27,7 +27,6 @@ describe('wmail', () => {
     expect(result['h:Reply-To']).toBe('Waveorb <hello@waveorb.com>')
     expect(result.from).toBe('Waveorb <hello@waveorb.com>')
     expect(result.to).toBe('Waveorb <hello@waveorb.com>')
-    expect(result.layout).toBeUndefined()
   })
 
   it('should build a message', async () => {
