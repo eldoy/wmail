@@ -63,8 +63,11 @@ module.exports = function(config = {}) {
     }
 
     // Layout
-    const layoutName = mail.layout || 'mail'
-    const layout = _.get(config.app.layouts, layoutName)
+    let layout = mail.layout || 'mail'
+    if (typeof layout === 'string') {
+      layout = _.get(config.app.layouts, layout)
+    }
+
     if (typeof layout === 'function') {
       const content = await layout(mail, $, data)
       mail.html = mustache.render(strip(content), { mail, ...data })
