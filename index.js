@@ -45,13 +45,13 @@ module.exports = function(config = {}) {
       mail = await _.get(config.app.mail, mail)($, data)
     }
 
-    // Content
+    // Template
     if (mail.file) {
-      const file = fs.readFileSync(mail.file, 'utf8')
+      mail.template = fs.readFileSync(mail.file, 'utf8')
       if (/\.md$/.test(mail.file)) {
         mail.format = 'markdown'
       }
-      mail.content = file
+      mail.content = mail.template
     }
 
     // Mustache
