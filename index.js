@@ -38,7 +38,7 @@ function strip(str) {
 }
 
 module.exports = function(config = {}) {
-  const mg = mailgun.client({ username: 'api', key: config.key })
+  const client = mailgun.client({ username: 'api', key: config.key })
 
   async function build(mail, options, $, data) {
     if (typeof mail === 'string') {
@@ -69,7 +69,9 @@ module.exports = function(config = {}) {
       }
     }
 
-    mail.text = htmlToText(mail.html)
+    if (!mail.text) {
+      mail.text = htmlToText(mail.html)
+    }
 
     options = { ...config.options, ...options, ...mail }
     delete options.layout
@@ -79,7 +81,7 @@ module.exports = function(config = {}) {
 
   async function send(...args) {
     options = await build(...args)
-    return mg.messages.create(config.domain, options)
+    return client.messages.create(config.domain, options)
   }
 
   return { build, send }
