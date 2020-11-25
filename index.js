@@ -77,6 +77,10 @@ module.exports = function(config = {}) {
       mail.text = htmlToText(mail.html)
     }
 
+    if (typeof mail.text === 'function') {
+      mail.text = await mail.text($, data)
+    }
+
     options = { ...config.options, ...options, ...mail }
     alias(options)
     return options
