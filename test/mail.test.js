@@ -90,7 +90,7 @@ describe('wmail', () => {
     expect(flatten(result.text)).toBe(`HELLOThis is the markdown content: Eldoy [https://eldoy.com]This is the key: helloBest regards`)
   })
 
-  it('should send a message', async () => {
+  xit('should send a message', async () => {
     const options = {
       to: 'Vidar Eldøy <vidar@eldoy.com>',
       attachment: [file]

@@ -73,12 +73,17 @@ module.exports = function(config = {}) {
       mail.html = mustache.render(strip(content), { mail, ...data })
     }
 
-    if (!mail.text) {
-      mail.text = htmlToText(mail.html)
-    }
-
+    // Text
     if (typeof mail.text === 'function') {
       mail.text = await mail.text($, data)
+    }
+
+    if (typeof mail.text === 'string') {
+      mail.text = mustache.render(strip(mail.text), { mail, ...data })
+    }
+
+    if (!mail.text) {
+      mail.text = htmlToText(mail.html)
     }
 
     options = { ...config.options, ...options, ...mail }
