@@ -43,30 +43,32 @@ module.exports = function(config = {}) {
   async function build(mail, options, $, data) {
     if (typeof mail === 'string') {
       mail = await _.get(config.app.mail, mail)($, data)
+    }
 
-      // Content
-      if (mail.file) {
-        const file = fs.readFileSync(mail.file, 'utf8')
-        if (/\.md$/.test(mail.file)) {
-          mail.format = 'markdown'
-        }
-        mail.content = file
-        delete mail.file
+    // Content
+    if (mail.file) {
+      const file = fs.readFileSync(mail.file, 'utf8')
+      if (/\.md$/.test(mail.file)) {
+        mail.format = 'markdown'
       }
+      mail.content = file
+      delete mail.file
+    }
 
-      // Format
-      mail.content = mustache.render(strip(mail.content), { mail, ...data })
-      if (mail.format === 'markdown') {
-        mail.content = marked(mail.content)
-      }
+    // Mustache
+    mail.content = mustache.render(strip(mail.content), { mail, ...data })
 
-      // Layout
-      const layoutName = mail.layout || 'mail'
-      const layout = _.get(config.app.layouts, layoutName)
-      if (typeof layout === 'function') {
-        const content = await layout(mail, $, data)
-        mail.html = mustache.render(strip(content), { mail, ...data })
-      }
+    // Format
+    if (mail.format === 'markdown') {
+      mail.content = marked(mail.content)
+    }
+
+    // Layout
+    const layoutName = mail.layout || 'mail'
+    const layout = _.get(config.app.layouts, layoutName)
+    if (typeof layout === 'function') {
+      const content = await layout(mail, $, data)
+      mail.html = mustache.render(strip(content), { mail, ...data })
     }
 
     if (!mail.text) {
