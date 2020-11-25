@@ -43,7 +43,6 @@ module.exports = function(config = {}) {
   async function build(mail, options, $, data) {
     if (typeof mail === 'string') {
       mail = await _.get(config.app.mail, mail)($, data)
-      const layoutName = mail.layout || 'mail'
 
       // Content
       if (mail.file) {
@@ -62,6 +61,7 @@ module.exports = function(config = {}) {
       }
 
       // Layout
+      const layoutName = mail.layout || 'mail'
       const layout = _.get(config.app.layouts, layoutName)
       if (typeof layout === 'function') {
         const content = await layout(mail, $, data)
