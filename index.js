@@ -41,7 +41,7 @@ module.exports = function(config = {}) {
   for (const key of KEYS) {
     config[key] = config[key] || process.env[`MAILGUN_${key.toUpperCase()}`]
   }
-  const client = mailgun.client({ username, key, url, public_key } = config)
+  const client = mailgun.client(config)
 
   /** Possible options
    * to: 'Vidar Eldøy <vidar@eldoy.com>',
