@@ -38,7 +38,12 @@ function strip(str) {
 }
 
 module.exports = function(config = {}) {
-  const client = mailgun.client({ username: 'api', key: config.key })
+  const {
+    key = process.env.MAILGUN_KEY,
+    url = process.env.MAILGUN_URL,
+    public_key = process.env.MAILGUN_PUBLIC_KEY
+  } = config
+  const client = mailgun.client({ username: 'api', key, url, public_key })
 
   async function build(mail, options, $, data) {
     if (typeof mail === 'string') {
