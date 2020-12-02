@@ -7,19 +7,18 @@ const marked = require('marked')
 
 marked.setOptions({ headerIds: false })
 const ALIASES = [{ reply: 'h:Reply-To' }]
-
-/** Possible options
- * to: 'Vidar Eldøy <vidar@eldoy.com>',
- * from: 'Vidar Eldøy <vidar@eldoy.com>',
- * cc: 'cc@eldoy.com',
- * bcc: 'bcc@eldoy.com',
- * subject: 'hello',
- * html: '<h1>Helloæøå</h1>',
- * text: 'Helloæøå',
- * reply: 'vidar@eldoy.com',
- * attachment: [file]
- * inline: [file]
-*/
+const APIS = [
+  'messages',
+  'domains',
+  'events',
+  'stats',
+  'suppressions',
+  'webhooks',
+  'routes',
+  'validate',
+  'parse'
+]
+const KEYS = ['key', 'url', 'public_key', 'domain']
 
 function alias(options) {
   for (const pair of ALIASES) {
@@ -38,13 +37,24 @@ function strip(str) {
 }
 
 module.exports = function(config = {}) {
-  const {
-    key = process.env.MAILGUN_KEY,
-    url = process.env.MAILGUN_URL,
-    public_key = process.env.MAILGUN_PUBLIC_KEY
-  } = config
-  const client = mailgun.client({ username: 'api', key, url, public_key })
+  config.username = 'api'
+  for (const key of KEYS) {
+    config[key] = config[key] || process.env[`MAILGUN_${key.toUpperCase()}`]
+  }
+  const client = mailgun.client({ username, key, url, public_key } = config)
 
+  /** Possible options
+   * to: 'Vidar Eldøy <vidar@eldoy.com>',
+   * from: 'Vidar Eldøy <vidar@eldoy.com>',
+   * cc: 'cc@eldoy.com',
+   * bcc: 'bcc@eldoy.com',
+   * subject: 'hello',
+   * html: '<h1>Helloæøå</h1>',
+   * text: 'Helloæøå',
+   * reply: 'vidar@eldoy.com',
+   * attachment: [file]
+   * inline: [file]
+  */
   async function build(mail, options, $, data) {
     if (typeof mail === 'string') {
       mail = await _.get(config.app.mail, mail)($, data)
@@ -96,10 +106,18 @@ module.exports = function(config = {}) {
     return options
   }
 
+
   async function send(...args) {
     options = await build(...args)
-    return client.messages.create(config.domain, options)
+    const domain = options.domain || config.domain
+    return client.messages.create(domain, options)
   }
 
-  return { build, send }
+  const fields = { build, send, client }
+
+  for (const api of APIS) {
+    fields[api] = client[api]
+  }
+
+  return fields
 }
