@@ -55,9 +55,9 @@ module.exports = function(config = {}) {
    * attachment: [file]
    * inline: [file]
   */
-  async function build(mail, options, $, data) {
+  async function build(mail, $ = {}, options = {}, data = {}) {
     if (typeof mail === 'string') {
-      mail = await _.get(config.app.mail, mail)($, data)
+      mail = await _.get($.app.mail, mail)($, data)
     }
 
     // Template
@@ -80,7 +80,7 @@ module.exports = function(config = {}) {
     // Layout
     let layout = mail.layout || 'mail'
     if (typeof layout === 'string') {
-      layout = _.get(config.app.layouts, layout)
+      layout = _.get($.app.layouts, layout)
     }
 
     if (typeof layout === 'function') {
