@@ -77,11 +77,11 @@ module.exports = function(config = {}) {
 
     // Template
     if (mail.file) {
-      mail.template = fs.readFileSync(mail.file, 'utf8')
+      const template = fs.readFileSync(mail.file, 'utf8')
       if (/\.md$/.test(mail.file)) {
         mail.format = 'markdown'
       }
-      mail.content = mail.template
+      mail.content = template
     }
 
     // Mustache
