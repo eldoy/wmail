@@ -36,6 +36,21 @@ function strip(str) {
   return str.split('\n').map(line => line.trim()).join('\n')
 }
 
+async function defaultLayout(mail, $, data) {
+  return /* html */`
+    <!doctype html>
+    <html>
+      <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <title>${mail.subject}</title>
+      </head>
+      <body>
+        ${mail.content}
+      </body>
+    </html>
+  `
+}
+
 module.exports = function(config = {}) {
   config.username = 'api'
   for (const key of KEYS) {
@@ -81,6 +96,10 @@ module.exports = function(config = {}) {
     let layout = mail.layout || 'mail'
     if (typeof layout === 'string') {
       layout = _.get($.app.layouts, layout)
+    }
+
+    if (!layout) {
+      layout = defaultLayout
     }
 
     if (typeof layout === 'function') {
