@@ -1,6 +1,6 @@
 {
   "name": "wmail",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "Mailgun email client with support for templates and layouts",
   "main": "index.js",
   "scripts": {
