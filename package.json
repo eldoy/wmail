@@ -15,8 +15,8 @@
   "dependencies": {
     "html-to-text": "^6.0.0",
     "lodash": "^4.17.20",
-    "mailgun.js": "^2.0.1",
-    "marked": "^1.2.5",
-    "mustache": "^4.0.1"
+    "mailgun.js": "^2.0.6",
+    "marked": "^1.2.7",
+    "mustache": "^4.1.0"
   }
 }
