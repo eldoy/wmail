@@ -132,7 +132,7 @@ const options = {
   inline: [readStream]
 }
 
-// Parameters: name, options, $, data
+// Parameters: name, $, options, data
 const data = { key: 'hello' }
 const result = await mailer.send('mail1', $, options, data)
 
