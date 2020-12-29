@@ -71,7 +71,7 @@ The markdown will be automatically transformed to HTML if it's a markdown file.
 ### Variables
 You can pass variables through the `data` parameter:
 ```js
-await mailer.send('mail1', options, $, data)
+await mailer.send('mail1', $, options, data)
 // ...
 content: `mail1 html content link ${data.key}`
 // ...
@@ -134,7 +134,7 @@ const options = {
 
 // Parameters: name, options, $, data
 const data = { key: 'hello' }
-const result = await mailer.send('mail1', options, $, data)
+const result = await mailer.send('mail1', $, options, data)
 
 // On success
 {
