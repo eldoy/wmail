@@ -15,7 +15,7 @@ npm i wmail
 
 ### Templates
 In `app/layouts` add a file called `mail.js`:
-```javascript
+```js
 module.exports = async function(mail, $, data) {
   return /* html */`
     <!doctype html>
@@ -37,7 +37,7 @@ module.exports = async function(mail, $, data) {
 ```
 
 Then in your `app/mail` directory add a file called `mail1.js` (or whatever):
-```javascript
+```js
 module.exports = async function($, data) {
   return {
     layout: 'mail',
@@ -48,7 +48,7 @@ module.exports = async function($, data) {
 ```
 
 The email content can be written in Markdown:
-```javascript
+```js
 // ...
 format: 'markdown',
 content: `# Hello`
@@ -57,7 +57,7 @@ content: `# Hello`
 The layout can't do Markdown, it has to be HTML.
 
 You can use the file option to set the content from a file:
-```javascript
+```js
 module.exports = async function($, data) {
   return {
     layout: 'mail',
@@ -70,7 +70,7 @@ The markdown will be automatically transformed to HTML if it's a markdown file.
 
 ### Variables
 You can pass variables through the `data` parameter:
-```javascript
+```js
 await mailer.send('mail1', options, $, data)
 // ...
 content: `mail1 html content link ${data.key}`
@@ -78,7 +78,7 @@ content: `mail1 html content link ${data.key}`
 ```
 
 You can also use [Mustache](https://github.com/janl/mustache.js):
-```javascript
+```js
 // ...
 content: `mail1 html content link {{data.key}}`
 // ...
@@ -88,9 +88,8 @@ Both of these techniques work in the layout as well.
 ### Configuration
 In `app/config` add a file called `mail.yml`:
 ```yaml
-mailgun:
-  domain: example.com
-  key: mailgun-api-key
+domain: example.com
+key: mailgun-api-key
 options:
   reply: mail@example.com
   from: mail@example.com
@@ -98,19 +97,18 @@ options:
 ```
 
 Create a plugin in `app/plugins` called `mailer.js`:
-```javascript
+```js
 const mailer = require('wmail')
 
 module.exports = async function(app) {
-  const { mailgun, options } = app.config.mail
-  app.mailer = mailer({ ...mailgun, options, app })
+  app.mailer = mailer(app.config.mail)
 }
 ```
 
 ### Send email
 Emails will automatically include the text version which is converted from the HTML in your templates.
 
-```javascript
+```js
 // Use mailer from plugin
 const mailer = $.app.mailer
 
