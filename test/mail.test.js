@@ -7,6 +7,8 @@ const file = fs.createReadStream(filepath)
 const app = loader.load('test/app')
 const $ = { app }
 
+process.env.WMAIL_APP_ROOT = 'test'
+
 function flatten(str) {
   return str.split('\n').map(line => line.trim()).join('')
 }
@@ -85,6 +87,11 @@ describe('wmail', () => {
     expect(result.to).toBe(options.to)
     expect(flatten(result.html)).toBe(`<!doctype html><html lang=\"en\"><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"><title>mail5</title><style>body { background-color: gold; }</style></head><body><div class=\"content\"><h1>Hello</h1><p>This is the markdown content:<a href=\"https://eldoy.com\">Eldoy</a></p><p>This is the key: hello</p></div><div>Best regards</div></body></html>`)
     expect(flatten(result.text)).toBe(`HELLOThis is the markdown content: Eldoy [https://eldoy.com]This is the key: helloBest regards`)
+  })
+
+  it('should support json, markdown and language from folder', async () => {
+    const result = await mailer.build('mail6', $, {}, { hello: 'hey' })
+    expect(flatten(result.text)).toBe('mail6 heyBest regards')
   })
 
   xit('should send a message', async () => {

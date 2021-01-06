@@ -1,4 +1,5 @@
 const fs = require('fs')
+const path = require('path')
 const _ = require('lodash')
 const mailgun = require('mailgun.js')
 const mustache = require('mustache')
@@ -72,7 +73,21 @@ module.exports = function(config = {}) {
   */
   async function build(mail, $ = {}, options = {}, data = {}) {
     if (typeof mail === 'string') {
-      mail = await _.get($.app.mail, mail)($, data)
+      let fn = _.get($.app.mail, mail)
+      if (typeof fn !== 'function') {
+        const lang = $.lang || 'en'
+        const root = process.env.WMAIL_APP_ROOT || ''
+        const base = path.join(process.cwd(), root, 'app', 'mail', mail)
+        const json = require(path.join(base, `${mail}.${lang}.json`))
+        const md = path.join(base, `${mail}.${lang}.md`)
+        if (fs.existsSync(md)) {
+          json.file = md
+        }
+        fn = async function($, data) {
+          return json
+        }
+      }
+      mail = await fn($, data)
     }
 
     // Blueprint
