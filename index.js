@@ -10,17 +10,6 @@ const marked = require('marked')
 
 marked.setOptions({ headerIds: false })
 const ALIASES = [{ reply: 'h:Reply-To' }]
-const APIS = [
-  'messages',
-  'domains',
-  'events',
-  'stats',
-  'suppressions',
-  'webhooks',
-  'routes',
-  'validate',
-  'parse'
-]
 const KEYS = ['key', 'url', 'public_key', 'domain']
 
 function alias(options) {
@@ -142,18 +131,11 @@ module.exports = function(config = {}) {
     return options
   }
 
-
   async function send(...args) {
     options = await build(...args)
     const domain = options.domain || config.domain
     return client.messages.create(domain, options)
   }
 
-  const fields = { build, send, client }
-
-  for (const api of APIS) {
-    fields[api] = client[api]
-  }
-
-  return fields
+  return { build, send, client }
 }
