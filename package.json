@@ -9,14 +9,15 @@
   "author": "Vidar Eldøy <vidar@eldoy.com>",
   "license": "MIT",
   "devDependencies": {
-    "conficurse": "^0.2.1",
+    "conficurse": "^0.3.4",
     "jest": "^26.6.3"
   },
   "dependencies": {
-    "html-to-text": "^6.0.0",
-    "lodash": "^4.17.20",
-    "mailgun.js": "^2.0.6",
-    "marked": "^1.2.7",
+    "form-data": "^2.3.3",
+    "html-to-text": "^7.0.0",
+    "lodash": "^4.17.21",
+    "mailgun.js": "^3.2.0",
+    "marked": "^2.0.1",
     "mustache": "^4.1.0"
   }
 }
