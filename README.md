@@ -28,7 +28,7 @@ module.exports = async function(mail, $, data) {
         </style>
       </head>
       <body>
-        <div class="content">${mail.html.content}</div>
+        <div class="content">${mail.content}</div>
         <div>Best regards</div>
       </body>
     </html>
