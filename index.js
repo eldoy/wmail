@@ -10,7 +10,7 @@ const marked = require('marked')
 
 marked.setOptions({ headerIds: false })
 const ALIASES = [{ reply: 'h:Reply-To' }]
-const KEYS = ['key', 'url', 'public_key', 'domain']
+const MAILGUN_KEYS = ['key', 'url', 'public_key', 'domain']
 
 function alias(options) {
   for (const pair of ALIASES) {
@@ -45,7 +45,7 @@ async function defaultLayout(mail, $, data) {
 
 module.exports = function(config = {}) {
   config.username = 'api'
-  for (const key of KEYS) {
+  for (const key of MAILGUN_KEYS) {
     config[key] = config[key] || process.env[`MAILGUN_${key.toUpperCase()}`]
   }
   const client = mailgun.client(config)
