@@ -6,9 +6,12 @@ const Mailgun = require('mailgun.js')
 const mailgun = new Mailgun(formData)
 const mustache = require('mustache')
 const { htmlToText } = require('html-to-text')
-const marked = require('marked')
+const tomarkup = require('tomarkup')({
+  headerIds: false,
+  video: false,
+  data: false
+})
 
-marked.setOptions({ headerIds: false })
 const ALIASES = [{ reply: 'h:Reply-To' }]
 const MAILGUN_KEYS = ['key', 'url', 'public_key', 'domain']
 
@@ -94,7 +97,7 @@ module.exports = function(config = {}) {
 
     // Format
     if (mail.format === 'markdown') {
-      mail.content = marked(mail.content)
+      mail.content = tomarkup(mail.content).html
     }
 
     // Layout
