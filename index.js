@@ -68,9 +68,9 @@ module.exports = function(config = {}) {
       if (typeof fn !== 'function') {
         const lang = $.lang || 'en'
         const root = process.env.WMAIL_APP_ROOT || ''
-        const base = path.join(process.cwd(), root, 'app', 'mail', mail)
-        const json = require(path.join(base, `${mail}.${lang}.json`))
-        const md = path.join(base, `${mail}.${lang}.md`)
+        const dir = path.join(process.cwd(), root, 'app', 'mail', mail)
+        const json = require(path.join(dir, `${mail}.${lang}.json`))
+        const md = path.join(dir, `${mail}.${lang}.md`)
         if (fs.existsSync(md)) {
           json.file = md
         }
@@ -81,13 +81,12 @@ module.exports = function(config = {}) {
       mail = await fn($, data)
     }
 
-    // Blueprint
     if (mail.file) {
-      mail.blueprint = fs.readFileSync(mail.file, 'utf8')
+      mail.base = fs.readFileSync(mail.file, 'utf8')
       if (/\.md$/.test(mail.file)) {
         mail.format = 'markdown'
       }
-      mail.content = mail.blueprint
+      mail.content = mail.base
     }
 
     // Mustache
